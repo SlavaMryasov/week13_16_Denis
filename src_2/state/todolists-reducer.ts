@@ -21,9 +21,9 @@ export type ChangeTodolistFilterActionType = {
     id: string
     filter: FilterValuesType
 }
-type SetTodosType = ReturnType<typeof setTodosAC>
+export type SetTodosType = ReturnType<typeof setTodosAC>
 
-type ActionsType = RemoveTodolistActionType | AddTodolistActionType
+export type ActionsType = RemoveTodolistActionType | AddTodolistActionType
     | ChangeTodolistTitleActionType
     | ChangeTodolistFilterActionType
     | SetTodosType
@@ -88,11 +88,13 @@ export const changeTodolistTitleAC = (id: string, title: string): ChangeTodolist
 export const changeTodolistFilterAC = (id: string, filter: FilterValuesType): ChangeTodolistFilterActionType => {
     return { type: 'CHANGE-TODOLIST-FILTER', id: id, filter: filter }
 }
-
 export const setTodosAC = (todos: TodolistType[]) => ({ type: 'SET-TODOS', todos } as const)
 
 
-export const getTodosTC = () => (dispatch: Dispatch, getState: any) => {
+
+export const getTodosThunk = (dispatch: Dispatch,) => {
     todolistsAPI.getTodolists()
         .then(res => dispatch(setTodosAC(res.data)))
 }
+
+

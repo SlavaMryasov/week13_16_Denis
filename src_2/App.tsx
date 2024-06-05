@@ -1,29 +1,30 @@
-import React, { useCallback, useEffect } from 'react'
-import './App.css';
-import { Todolist } from './Todolist';
-import { AddItemForm } from './AddItemForm';
+import { Menu } from '@mui/icons-material';
 import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
-import { Menu } from '@mui/icons-material';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddItemForm } from './AddItemForm';
+import './App.css';
+import { Todolist } from './Todolist';
+import { TaskStatuses, TaskType, todolistsAPI } from './api/todolists-api';
+import { AppDispatchType, AppRootStateType, useAppDispatch } from './state/store';
+import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from './state/tasks-reducer';
 import {
+    FilterValuesType,
+    TodolistDomainType,
     addTodolistAC,
     changeTodolistFilterAC,
     changeTodolistTitleAC,
-    FilterValuesType,
-    getTodosTC,
+    getTodosThunk,
     removeTodolistAC,
-    TodolistDomainType
-} from './state/todolists-reducer'
-import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, getTasksTC, removeTaskAC } from './state/tasks-reducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppRootStateType, useAppDispatch } from './state/store';
-import { TaskStatuses, TaskType } from './api/todolists-api'
+    setTodosAC
+} from './state/todolists-reducer';
 
 
 export type TasksStateType = {
@@ -36,9 +37,6 @@ function App() {
     const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const dispatch = useAppDispatch()
-    useEffect(() => {
-        dispatch(getTodosTC())
-    }, [])
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
         const action = removeTaskAC(id, todolistId);
@@ -79,6 +77,11 @@ function App() {
         const action = addTodolistAC(title);
         dispatch(action);
     }, [dispatch]);
+
+
+    useEffect(() => {
+        dispatch(getTodosThunk)
+    }, [])
 
     return (
         <div className="App">
