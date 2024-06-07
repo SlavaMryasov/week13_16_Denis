@@ -14,17 +14,15 @@ import './App.css';
 import { Todolist } from './Todolist';
 import { TaskStatuses, TaskType } from './api/todolists-api';
 import { AppRootStateType, useAppDispatch } from './state/store';
-import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, createTaskTC, deleteTaskTC, removeTaskAC, updateTaskTC } from './state/tasks-reducer';
+import { createTaskTC, deleteTaskTC, updateTaskTC } from './state/tasks-reducer';
 import {
     FilterValuesType,
     TodolistDomainType,
     changeTodoTitleTC,
     changeTodolistFilterAC,
-    changeTodolistTitleAC,
     createTodoTC,
     deleteTodoTC,
-    getTodosTC,
-    removeTodolistAC
+    getTodosTC
 } from './state/todolists-reducer';
 
 
@@ -44,23 +42,19 @@ function App() {
     }, [])
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
-        // const action = removeTaskAC(id, todolistId);
-        // dispatch(action);
         dispatch(deleteTaskTC(todolistId, id))
     }, []);
 
     const addTask = useCallback(function (title: string, todolistId: string) {
-        // const action = addTaskAC(title, todolistId);
-        // dispatch(action);
         dispatch(createTaskTC(todolistId, title))
     }, []);
 
     const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        dispatch(updateTaskTC(id, todolistId, status))
+        dispatch(updateTaskTC(id, todolistId, { status }))
     }, []);
 
     const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        const action = changeTaskTitleAC(id, newTitle, todolistId);
+        const action = updateTaskTC(id, todolistId, { title: newTitle });
         dispatch(action);
     }, []);
 
