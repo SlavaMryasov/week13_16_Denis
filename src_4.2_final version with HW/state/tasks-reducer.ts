@@ -88,37 +88,37 @@ export const updateTaskModule = (todoId: string, taskId: string, model: UpdateTa
 
 
 
-export const getTasksTC = (todoId: string) => (dispatch: Dispatch) => {
+export const getTasksTC = (todoId: string) => (dispatch: Dispatch<ActionsType>) => {
     todolistsAPI.getTasks(todoId)
         .then(res => dispatch(setTasksAC(res.data.items, todoId)))
 }
-export const createTaskTC = (todoId: string, title: string) => (dispatch: Dispatch) => {
+export const createTaskTC = (todoId: string, title: string) => (dispatch: Dispatch<ActionsType>) => {
     todolistsAPI.createTask(todoId, title)
         .then(res => dispatch(addTaskAC(res.data.data.item)))
 }
-export const deleteTaskTC = (todoId: string, taskId: string) => (dispatch: Dispatch) => {
+export const deleteTaskTC = (todoId: string, taskId: string) => (dispatch: Dispatch<ActionsType>) => {
     todolistsAPI.deleteTask(todoId, taskId)
         .then(res => dispatch(removeTaskAC(taskId, todoId)))
 }
 
-export const updateTaskTC = (taskId: string, todoId: string, modulePart: UpdateTaskModelPartType) => (dispatch: Dispatch, getState: () => AppRootStateType) => {
-    const tasks = getState().tasks
-    const task = tasks[todoId].find(t => t.id === taskId)
-    if (task) {
-        const model = {
-            title: task.title,
-            description: task.description,
-            status: task.status,
-            priority: task.priority,
-            startDate: task.startDate,
-            deadline: task.deadline,
-            ...modulePart
+export const updateTaskTC = (taskId: string, todoId: string, modulePart: UpdateTaskModelPartType) =>
+    (dispatch: Dispatch, getState: () => AppRootStateType) => {
+        const tasks = getState().tasks
+        const task = tasks[todoId].find(t => t.id === taskId)
+        if (task) {
+            const model = {
+                title: task.title,
+                description: task.description,
+                status: task.status,
+                priority: task.priority,
+                startDate: task.startDate,
+                deadline: task.deadline,
+                ...modulePart
+            }
+            todolistsAPI.updateTask(todoId, taskId, model)
+                .then(res => dispatch(updateTaskModule(todoId, taskId, model)))
         }
-        todolistsAPI.updateTask(todoId, taskId, model)
-            .then(res => dispatch(updateTaskModule(todoId, taskId, model)))
     }
-
-}
 
 export type UpdateTaskModelPartType = {
     title?: string

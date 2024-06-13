@@ -1,6 +1,8 @@
 import { v1 } from 'uuid';
 import { TodolistType, todolistsAPI } from '../api/todolists-api'
-import { Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { AppRootStateType } from './store';
 
 export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>
 export type AddTodolistActionType = ReturnType<typeof addTodolistAC>
@@ -74,20 +76,27 @@ export const setTodosAC = (todos: TodolistType[]) =>
     ({ type: 'SET-TODOS', todos } as const)
 
 
-export const getTodosTC = () => (dispatch: Dispatch) => {
+export const getTodosTC = () => (dispatch: Dispatch<ActionsType>) => {
     todolistsAPI.getTodolists()
         .then(res => dispatch(setTodosAC(res.data)))
 }
-export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
+export const createTodoTC = (title: string): ThunkAction<void, AppRootStateType, unknown, ActionsType> => (dispatch) => {
     todolistsAPI.createTodolist(title)
         .then(res => dispatch(addTodolistAC(res.data.data.item)))
 }
-export const deleteTodoTC = (todoId: string) => (dispatch: Dispatch) => {
+
+type TodoThunkType<ReturnType = void> = ThunkAction<void, AppRootStateType, unknown, ActionsType>
+export const deleteTodoTC = (todoId: string): TodoThunkType => (dispatch) => {
     todolistsAPI.deleteTodolist(todoId)
         .then(res => dispatch(removeTodolistAC(todoId)))
 }
-export const changeTodoTitleTC = (todoId: string, title: string) => (dispatch: Dispatch) => {
-    todolistsAPI.updateTodolist(todoId, title)
-        .then(res => dispatch(changeTodolistTitleAC(todoId, title)))
+export const changeTodoTitleTC = (todoId: string, title: string) => async (dispatch: Dispatch) => {
+    const res = await todolistsAPI.updateTodolist(todoId, title)
+    dispatch(changeTodolistTitleAC(todoId, title))
 }
+
+// export const changeTodoTitleTC = (todoId: string, title: string) => (dispatch: Dispatch) => {
+//     todolistsAPI.updateTodolist(todoId, title)
+//         .then(res => dispatch(changeTodolistTitleAC(todoId, title)))
+// }
 
