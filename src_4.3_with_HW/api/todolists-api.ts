@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
+import { RequestStatusType } from '../app/AppReducer';
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -9,24 +10,6 @@ const instance = axios.create({
 })
 
 // api
-export type UserData = {
-    userId: number
-}
-
-export type LoginParamsType = {
-    email: string
-    password: string
-    rememberMe: boolean
-    captcha?: boolean
-}
-
-export const authAPI = {
-    login(data: LoginParamsType) {
-        return instance.post<ResponseType<UserData>, AxiosResponse<ResponseType<UserData>, LoginParamsType>>('/auth/login', data)
-    }
-}
-
-
 export const todolistsAPI = {
     getTodolists() {
         return instance.get<TodolistType[]>('todo-lists');
@@ -95,6 +78,7 @@ export type TaskType = {
     todoListId: string
     order: number
     addedDate: string
+    entityStatus: RequestStatusType
 }
 export type UpdateTaskModelType = {
     title: string
@@ -108,4 +92,11 @@ type GetTasksResponse = {
     error: string | null
     totalCount: number
     items: TaskType[]
+}
+
+
+export enum STATUS_CODE {
+    SUCCESS = 0,
+    ERROR = 1,
+    RECAPTHA_ERROR = 10,
 }

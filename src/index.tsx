@@ -3,9 +3,44 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import App from './app/App';
-import {Provider} from 'react-redux';
-import {store} from './app/store';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Login } from './features/login/Login';
+import { TodolistsList } from './features/TodolistsList/TodolistsList';
+import { Container } from '@mui/material';
+import { ErrorPage } from './components/ErrorPage/ErrorPage';
 
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <App />,
+        errorElement: <Navigate to={'/404'} />,
+        children: [
+            {
+                index: true, // за счет индекса реакт роутер дом понимает, что этот объект в приоритете
+                element: <Navigate to={'/todolists'} />,
+            },
+            {
+                path: "/login",
+                element: <Login />,
+            },
+            {
+                path: "/todolists",
+                element: <Container fixed><TodolistsList /></Container>,
+            },
+            {
+                path: "/404",
+                element: <ErrorPage />,
+            },
+        ],
+    },
+    // {
+    //     path: "/404",
+    //     element: <ErrorPage />,
+    // },
+]);
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -13,7 +48,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <Provider store={store}>
-        <App/>
+        <RouterProvider router={router} />
     </Provider>
 );
 
