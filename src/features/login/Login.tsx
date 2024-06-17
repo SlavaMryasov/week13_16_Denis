@@ -1,17 +1,15 @@
-import React from 'react'
-import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import Checkbox from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
 import FormLabel from '@mui/material/FormLabel'
+import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
 import { useFormik } from 'formik'
-import { loginTC } from './auth-reducer'
-import { AppRootStateType, useAppDispatch } from '../../app/store'
-import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../app/store'
+import { loginTC } from './auth-reducer'
 
 type ErrorsType = {
     email?: string
@@ -20,7 +18,7 @@ type ErrorsType = {
 
 export const Login = () => {
     const dispatch = useAppDispatch()
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
 
     const formik = useFormik({ // хук настроек, возвращает настроеный объект 
         initialValues: {
@@ -50,11 +48,18 @@ export const Login = () => {
         },
     })
     // console.log('formik', formik)
-    console.log(formik.errors)
+    // console.log(formik.errors)
 
-    if (isLoggedIn) {
-        return <Navigate to={'/todolists'} />
-    }
+    if (isLoggedIn) return <Navigate to={'/todolists'} />
+
+    // if (isLoggedIn) {
+    //     return <Navigate to={'/todolists'} />
+    // }else{
+    //     return <Navigate to={'/login'}
+    // }
+
+
+
     return (
         <Grid container justifyContent={'center'}>
             <Grid item justifyContent={'center'}>

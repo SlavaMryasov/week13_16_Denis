@@ -20,9 +20,22 @@ export type LoginParamsType = {
     captcha?: boolean
 }
 
+export type UserType = {
+    id: number
+    email: string
+    login: string
+}
+
 export const authAPI = {
+    me() {
+        return instance.get<ResponseType<UserType>>('/auth/me')
+    },
     login(data: LoginParamsType) {
         return instance.post<ResponseType<UserData>, AxiosResponse<ResponseType<UserData>, LoginParamsType>>('/auth/login', data)
+    },
+    logout() {
+        return instance.delete<ResponseType>('/auth/login')
+
     }
 }
 
